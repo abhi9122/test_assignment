@@ -12,5 +12,5 @@ psycopg2-binary==2.9.3
 pytz==2021.3
 requests==2.26.0
 sqlparse==0.4.2
-twilio==6.77.0
-whitenoise==5.3.0
+twilio==6.8.9.1
+whitenoise==6.0.0
