@@ -1,0 +1,36 @@
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore the virtual environment directory
+venv/
+env/
+
+# Ignore the Django generated files and directories
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+
+# Ignore media files (if not using a separate storage service)
+media/
+
+# Ignore static files (if using a CDN or separate storage service)
+static/
+
+# Ignore the settings file (use a separate settings directory if needed)
+
+# Ignore the secret key (use environment variables instead)
+*.secret_key
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+.env
