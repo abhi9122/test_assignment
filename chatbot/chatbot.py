@@ -44,7 +44,7 @@ class TwilioHelper:
             quest, message)
 
         # print(best_match, questions_ans)
-        if score > 80:
+        if score > 87:
             ans = ''
             for q in questions_ans:
                 if q[0] == best_match:
