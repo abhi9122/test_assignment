@@ -16,6 +16,7 @@ from datetime import datetime
 from .model_helpers import MessageUserTypeChoice
 from django.utils import timezone
 from .chat_promt import ChatGPTClient
+from django.http import Http404
 
 
 class UserSignupView(generics.CreateAPIView):
@@ -58,13 +59,24 @@ class ChatbotCreateView(generics.CreateAPIView):
         serializer.save(user=chatbot_user)
 
 
-class ChatbotRetrieveView(generics.RetrieveAPIView):
+class ChatbotRetrieveView(generics.ListAPIView):
     serializer_class = ChatbotSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
+        user = self.request.user.chatbot_user
+        print(Chatbot.objects.filter(user=user))
+        return Chatbot.objects.filter(user=user)
+
+
+class ChatbotUpdateView(generics.UpdateAPIView):
+    serializer_class = ChatbotSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user.chatbot_user
         return Chatbot.objects.filter(user=user)
 
 
@@ -81,9 +93,30 @@ class QuestionsCreateView(generics.CreateAPIView):
         except Chatbot.DoesNotExist:
             # Handle the case where the chatbot does not exist
             # You can choose to raise an exception or return an error response
-            pass
+            return Response({'error': 'Invalid chatbot id'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             serializer.save(chatbot=chatbot)
+
+
+class QuestionsUpdateView(generics.UpdateAPIView):
+    serializer_class = QuestionsSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Questions.objects.all()
+
+    def perform_update(self, serializer):
+        q_id = self.kwargs["pk"]
+        try:
+            quest = Questions.objects.get(id=str(q_id))
+        except Questions.DoesNotExist:
+            raise Http404("Question does not exist")
+        else:
+            quest.question = serializer.validated_data['question']
+            quest.answer = serializer.validated_data['answer']
+            quest.save()  
+
 
 
 class QuestionsListView(generics.ListAPIView):
@@ -91,7 +124,7 @@ class QuestionsListView(generics.ListAPIView):
 
     def get_queryset(self):
         chatbot_id = self.kwargs['chatbot_id']
-        return Questions.objects.filter(chatbot_id=chatbot_id)
+        return Questions.objects.filter(chatbot__id=str(chatbot_id))
 
 
 class MessageCreateView(generics.CreateAPIView):
@@ -101,7 +134,7 @@ class MessageCreateView(generics.CreateAPIView):
         serializer.save(customer=self.request.user)
 
 
-class MessageRetrieveView(generics.RetrieveAPIView):
+class MessageRetrieveView(generics.ListAPIView):
     queryset = Message.objects.all()
 
     serializer_class = MessageSerializer
