@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-8)*@v=wohah=ef+bqt6486(=@z!6awk192hg7f6n$_ris(r-2$"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_swagger",
     "drf_yasg",
+    'corsheaders',
     "chatbot",
     "whatsapp_chatbot_project",
 ]
@@ -64,9 +65,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware"
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+# CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:8000', 'https://whatsapp-chatbot-frontend.herokuapp.com/']
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "whatsapp_chatbot_project.urls"
 
