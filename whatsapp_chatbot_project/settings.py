@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "rest_framework_swagger",
     "drf_yasg",
     "chatbot",
+    "whatsapp_chatbot_project",
 ]
 
 REST_FRAMEWORK = {
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
 
 
@@ -138,8 +140,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-
+STATIC_DIRS = os.path.join(BASE_DIR, "static")
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
