@@ -74,10 +74,10 @@ class QuestionsCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        chatbot_id = self.kwargs
+        chatbot_id = self.kwargs["chatbot_id"]
 
         try:
-            chatbot = Chatbot.objects.get(id=chatbot_id)
+            chatbot = Chatbot.objects.get(id=str(chatbot_id))
         except Chatbot.DoesNotExist:
             # Handle the case where the chatbot does not exist
             # You can choose to raise an exception or return an error response
@@ -133,7 +133,9 @@ class TwilioWebhookView(APIView):
         if serializer.is_valid():
             body = serializer.validated_data['Body']
             from_number = serializer.validated_data['From']
-
+            print(request.data)
+            if from_number.startswith('whatsapp:'):
+                from_number = from_number[9:]
             # map customer to chatbot
             try:
                 customer = Customer.objects.get(phone=from_number)
