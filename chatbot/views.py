@@ -38,6 +38,7 @@ class UserLoginView(generics.CreateAPIView):
                             username=email, password=password)
         user = ChatbotUser.objects.get(email=email)
 
+        # create token for the user to access login auths
         if user:
             token, created = Token.objects.get_or_create(user=user.user)
             return Response({'token': token.key}, status=status.HTTP_200_OK)
@@ -51,6 +52,7 @@ class ChatbotCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        # create chatbot
         user = self.request.user
         chatbot_user = user.chatbot_user
         serializer.save(user=chatbot_user)
@@ -125,6 +127,7 @@ class TwilioWebhookView(APIView):
         except ObjectDoesNotExist:
             return Response({'error': 'Invalid creator'}, status=status.HTTP_401_UNAUTHORIZED)
 
+        # twillio response data api has specific fileds from serializers
         serializer = IncomingMessageSerializer(data=request.data)
 
         if serializer.is_valid():

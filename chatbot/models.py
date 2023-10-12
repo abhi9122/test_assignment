@@ -2,7 +2,6 @@ from django.db import models
 from uuid import uuid4
 from django_extensions.db.models import TimeStampedModel
 from .model_helpers import CountryChoice, ChatBotTypesChoice, MessageUserTypeChoice
-from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 
 class ChatbotUser(models.Model):
