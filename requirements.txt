@@ -16,3 +16,4 @@ twilio==8.9.1
 whitenoise==6.0.0
 python-levenshtein==0.20.9 
 python-dotenv==0.21.1 
+django-rest-swagger==2.2.0
