@@ -55,7 +55,7 @@ class QuestionsSerializer(serializers.ModelSerializer):
         except Chatbot.DoesNotExist:
             raise serializers.ValidationError("Invalid chatbot_id")
 
-        question = Questions.objects.create(chatbot=chatbot, **validated_data)
+        question = Questions.objects.create(chatbot=chatbot, question = validated_data["question"], answer= validated_data["answer"])
         return question
 
 
