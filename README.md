@@ -3,7 +3,7 @@
 # WhatsApp ChatBot
 The WhatsApp ChatBot is a personalized chatbot that can be used to send messages to a WhatsApp number. 
 
-- #### **WhatsApp Number:** +1 (415) 523- (chat with code join love-brother )
+- #### **WhatsApp Number:** +1 (415) 523-8886 (chat with code join love-brother )
 - #### **Dashboard:** https://frontend-whatsappchat.vercel.app/
 - #### **Django Rest API:** https://test-assignment-ofpl.onrender.com/
 
