@@ -1,4 +1,4 @@
-# WhatsApp ChatBot
+
 
 # WhatsApp ChatBot
 The WhatsApp ChatBot is a personalized chatbot that can be used to send messages to a WhatsApp number. 
