@@ -70,7 +70,7 @@ class TwilioWebhookView(APIView):
                     if not faq:
                         # send response from chatgpt
                         gpt_client = ChatGPTClient()
-                        response_message = gpt_client.ask_question(body)
+                        response_message = gpt_client.ask_question(body + " \nword limit: 50 words.")
 
                 user_message = Message.objects.create(
                     message=body, customer=customer, chatbot=chatbot)
