@@ -9,7 +9,7 @@ class ChatbotUser(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='chatbot_user')
-
+    
 
     def __str__(self):
         if not self.name:
@@ -26,9 +26,9 @@ class Customer(TimeStampedModel):
         max_length=30, choices=CountryChoice.choices, default=CountryChoice.INDIA)
 
     def __str__(self):
-        if not self.name:
-            return self.id
-        return self.name
+        if not self.phone:
+            return self.name if self.name else self.id
+        return self.phone
 
 
 class Chatbot(TimeStampedModel):
