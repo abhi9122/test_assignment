@@ -1,6 +1,6 @@
 from twilio.rest import Client
 from django.conf import settings
-from .models import Chatbot, Message
+from .models import Chatbot, Message, Customer
 from fuzzywuzzy import process
 
 
@@ -25,12 +25,22 @@ class TwilioHelper:
         best_match, score = process.extractOne(provided_answer, questions)
         return best_match, score
 
-    def first_message_response(self, message, chatbot: Chatbot):
+    def first_message_response(self, message: str, chatbot: Chatbot, customer: Customer):
         response_message = chatbot.greet_template
         # greet template should be like:
         # Hello{name}, my name is  {chatbot_name}! I am a {{chatbot_type}}. How can I help you?
 
         # check if its first message
+        
+        if message.startswith("Hi") or message.startswith("Hello") or message.startswith("Hey"):
+            return chatbot.greet_template
+                    
+        try:
+            messages = Message.objects.filter(customer__phone=customer.phone, chatbot=chatbot)
+            if messages.count() == 0:
+                return chatbot.greet_template
+        except:
+            return 
         if chatbot.all_messages.count() == 0:
             return chatbot.greet_template
         else:

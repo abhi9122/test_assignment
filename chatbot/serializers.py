@@ -70,8 +70,8 @@ class ChatbotSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['id', 'message', 'customer', 'chatbot']
-
+        fields = ['id', 'message', 'customer', 'chatbot', 'created']
+        ordering = ['-created']
 
 class IncomingMessageSerializer(serializers.Serializer):
     Body = serializers.CharField()
