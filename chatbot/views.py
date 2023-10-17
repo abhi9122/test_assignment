@@ -135,7 +135,7 @@ class MessageCreateView(generics.CreateAPIView):
 
 
 class MessageRetrieveView(generics.ListAPIView):
-    queryset = Message.objects.all()
+    queryset = Message.objects.all().order_by('-created')
 
     serializer_class = MessageSerializer
     authentication_classes = [TokenAuthentication]
@@ -183,7 +183,7 @@ class TwilioWebhookView(APIView):
                 twilio_helper = TwilioHelper()
 
                 is_first_and_message = twilio_helper.first_message_response(
-                    body, chatbot)
+                    body, chatbot, customer)
 
                 if is_first_and_message:
                     response_message = is_first_and_message
