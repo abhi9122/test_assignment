@@ -68,11 +68,17 @@ class ChatbotSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['customer'] = str(instance.customer)
+        return data
+    
     class Meta:
         model = Message
-        fields = ['id', 'message', 'customer', 'chatbot', 'created']
+        fields = ['id', 'message', 'chatbot', 'created']
         ordering = ['-created']
-
+    
 class IncomingMessageSerializer(serializers.Serializer):
     Body = serializers.CharField()
     From = serializers.CharField()
