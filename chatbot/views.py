@@ -206,11 +206,65 @@ class MessageCreateView(generics.CreateAPIView):
 
 
 class MessageRetrieveView(generics.ListAPIView):
-    queryset = Message.objects.all()
+    queryset = Message.objects.all().order_by('-created')
 
     serializer_class = MessageSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+
+# Read message from Twillio webhook
+class TwilioWebhookView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        # get from request data
+        chatbot_id = request.query_params.get('chatbot_id')
+        creator_id = request.query_params.get('creator_id')
+
+        try:
+            chatbot = Chatbot.objects.get(id=chatbot_id)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Invalid chatbot'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            creator = ChatbotUser.objects.get(id=creator_id)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Invalid creator'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # twillio response data api has specific fileds from serializers
+        serializer = IncomingMessageSerializer(data=request.data)
+
+        if serializer.is_valid():
+            body = serializer.validated_data['Body']
+            from_number = serializer.validated_data['From']
+            print(request.data)
+            if from_number.startswith('whatsapp:'):
+                from_number = from_number[9:]
+            # map customer to chatbot
+            try:
+                customer = Customer.objects.get(phone=from_number)
+            except ObjectDoesNotExist:
+                customer = Customer.objects.create(
+                    phone=from_number, name=from_number, last_active=timezone.now())
+                customer.users.add(creator)
+                customer.save()
+
+            try:
+                # create message record in the database
+                twilio_helper = TwilioHelper()
+
+                is_first_and_message = twilio_helper.first_message_response(
+                    body, chatbot, customer)
+
+                if is_first_and_message:
+                    response_message = is_first_and_message
+                else:
+                    faq = twilio_helper.fetch_matching_faq(
+                        message=body, chatbot=chatbot)
+                    response_message = faq
+                    if not faq:
+                        # send response from chatgpt
+                        gpt_client = ChatGPTClient()
+                        response_message = gpt_client.ask_question(body)
 
 
