@@ -186,8 +186,7 @@ class QuestionsUpdateView(generics.UpdateAPIView):
         else:
             quest.question = serializer.validated_data['question']
             quest.answer = serializer.validated_data['answer']
-            quest.save()  
-
+            quest.save()
 
 
 class QuestionsListView(generics.ListAPIView):
@@ -206,7 +205,8 @@ class MessageCreateView(generics.CreateAPIView):
 
 
 class MessageRetrieveView(generics.ListAPIView):
-    queryset = Message.objects.all().order_by('-created')
+    queryset = Message.objects.all().select_related('customer').order_by(
+        '-created')
 
     serializer_class = MessageSerializer
     authentication_classes = [TokenAuthentication]
